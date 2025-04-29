@@ -44,26 +44,30 @@ app.get('/chat.html', (req, res) => {
 });
 
 // Handle login requests
+app.js
 app.post('/login', (req, res) => {
   const userInput = req.body;
 
-    for(const user of users){
-      if (user.username === userInput.loginUsr){
-        if (user.password === userInput.loginPW){
-          // Correct User Input
-          const sessionId = uuidv4();
-          req.session.userId = sessionId;  
-          req.session.username = user.username; 
-          // Store username in the cookie
-          res.cookie('sessionUsername', user.username, { maxAge: 3600000, path: '/' });
-          console.log(`User ${user.username} logged in with session ID: ${sessionId}`);
-          result = ({"result": "true"})
-          return res.send(result);
-        }
-      } 
+  for (const user of users) {
+    if (user.username === userInput.loginUsr && user.password === userInput.loginPW) {
+      const sessionId = uuidv4();
+      req.session.userId = user.userId;
+      req.session.username = user.username;
+      req.session.role = user.role;
+
+      res.cookie('sessionUsername', user.username, { maxAge: 3600000, path: '/' });
+      console.log(`User ${user.username} logged in with session ID: ${sessionId}`);
+
+      // Redirect based on role
+      if (user.role === 'employee') {
+        return res.json({ result: "true", redirect: '/employee.html' });
+      } else if (user.role === 'manager') {
+        return res.json({ result: "true", redirect: '/manager.html' });
+      }
     }
-      result = ({"result": "false"})
-      res.send(result);
+  }
+
+  res.json({ result: "false" });
 });
 
 // Handle signup requests
@@ -147,6 +151,83 @@ app.get('/get-messages', (req, res) => {
   // Messages newer then "last timestamp"
   const newMessages = currentMessages.filter(message => new Date(message.timestamp) > new Date(lastFetched));
   res.json({ messages: newMessages });
+});
+
+app.post('/create-proposal', (req, res) => {
+  const { title, description, priority } = req.body;
+
+  if (req.session.userId) {
+    const user = users.find(u => u.userId === req.session.userId);
+
+    if (user && user.role === 'employee') {
+      const proposalsPath = path.join(__dirname, 'public', 'db', 'proposals.json');
+      const proposals = JSON.parse(fs.readFileSync(proposalsPath, 'utf8'));
+
+      const newProposal = {
+        id: proposals.length + 1,
+        title,
+        description,
+        priority, // Add priority to the proposal
+        createdBy: user.username,
+        status: 'pending', // Default status
+        timestamp: new Date().toISOString()
+      };
+
+      proposals.push(newProposal);
+      fs.writeFileSync(proposalsPath, JSON.stringify(proposals, null, 2));
+
+      return res.json({ result: "success", proposal: newProposal });
+    }
+  }
+
+  res.status(403).json({ result: "error", message: "Unauthorized" });
+});
+
+app.post('/update-proposal', (req, res) => {
+  const { proposalId, action } = req.body;
+
+  if (req.session.userId) {
+    const user = users.find(u => u.userId === req.session.userId);
+
+    if (user && user.role === 'manager') {
+      const proposalsPath = path.join(__dirname, 'public', 'db', 'proposals.json');
+      const proposals = JSON.parse(fs.readFileSync(proposalsPath, 'utf8'));
+
+      const proposal = proposals.find(p => p.id === proposalId);
+
+      if (proposal) {
+        proposal.status = action === 'approve' ? 'approved' : 'denied';
+        fs.writeFileSync(proposalsPath, JSON.stringify(proposals, null, 2));
+
+        return res.json({ result: "success", proposal });
+      }
+
+      return res.status(404).json({ result: "error", message: "Proposal not found" });
+    }
+  }
+
+  res.status(403).json({ result: "error", message: "Unauthorized" });
+});
+app.post('/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      console.error('Error destroying session:', err);
+      return res.status(500).json({ result: 'error', message: 'Failed to log out' });
+    }
+    res.clearCookie('connect.sid'); // Clear the session cookie
+    res.json({ result: 'success', message: 'Logged out successfully' });
+  });
+});
+
+app.get('/proposals', (req, res) => {
+  if (req.session.userId) {
+    const proposalsPath = path.join(__dirname, 'public', 'db', 'proposals.json');
+    const proposals = JSON.parse(fs.readFileSync(proposalsPath, 'utf8'));
+
+    return res.json({ proposals });
+  }
+
+  res.status(403).json({ result: "error", message: "Unauthorized" });
 });
 
 app.use((req, res) => {

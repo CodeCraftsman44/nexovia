@@ -1,58 +1,38 @@
-<!DOCTYPE HTML>
-<!-- Project web engineering - Website made by: "Janik Hamburger", "Matvei Pikarevskis"-->
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Login</title>
-        <link rel="stylesheet" href="css/main.css"/>
-        <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
-    </head>
-    <body>
-        <!-- Navigation Panel -->
-		<nav>
-			<div class="company">Communion</div>
-			<div>
-				<a href="index.html"><strong>Home</strong></a>
-				<a href="about.html"><strong>About</strong></a>
-				<a href="cat.html"><strong>Cat</strong></a>
-			</div>
-			<div>
-				<a href="login.html"><strong>Login</strong></a>
-			</div>
-		</nav>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <script>
+    async function login() {
+      const loginUsr = document.getElementById('username').value;
+      const loginPW = document.getElementById('password').value;
 
-		<!-- Sign Up Page -->
-		<div class="container">
-			<div class="position-login-mask">
-				<h1 class="olive">
-					Login <br />
-                </h1>
-                <div class="input-box">
-                    <input id="loginUsr" type="text" placeholder="Username" required> <br />
-                </div>
-                <div class="input-box">
-                    <input id="loginPw" type="text" placeholder="Password" required> <br />
-                </div>
-                <div>
-                    <p id="wrongInput"></p>
-                </div>
-                <a class="button" id="loginSubmit">
-                    Login <br />
-                </a>
-                <div>
-                    <p>
-                        Don't have an account?  <a href="signup.html"><strong>Sign Up</strong></a>
-                    </p>
-                </div>
-			</div>
-		</div>
-		<!-- Footer -->
-		<div class="footer">
-			<p>-- DHBW Project by Mystl and Athlory --</p>
-		</div>
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ loginUsr, loginPW })
+      });
 
-		<!-- Scripts -->
-        <script src="./js/loginClient.js"></script>
-    </body>
+      const result = await response.json();
+      if (result.result === "true") {
+        // Redirect to the appropriate dashboard
+        window.location.href = result.redirect;
+      } else {
+        alert('Login failed. Please check your credentials.');
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1>Login</h1>
+  <form onsubmit="event.preventDefault(); login();">
+    <label for="username">Username:</label><br>
+    <input type="text" id="username" name="username" required><br><br>
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password" required><br><br>
+    <button type="submit">Login</button>
+  </form>
+</body>
 </html>

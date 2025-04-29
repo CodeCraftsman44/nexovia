@@ -1,12 +1,20 @@
 [
   {
-    "username": "test",
-    "password": "1234",
-    "userId": "1"
+    "username": "Alice",
+    "password": "password123",
+    "userId": "1",
+    "role": "employee"
   },
   {
-    "username": "user",
-    "password": "1234",
-    "userId": "2"
+    "username": "Bob",
+    "password": "123",
+    "userId": "2",
+    "role": "employee"
+  },
+  {
+    "username": "manager",
+    "password": "manager123",
+    "userId": "3",
+    "role": "manager"
   }
 ]

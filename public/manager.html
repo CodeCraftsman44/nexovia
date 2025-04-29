@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manager Dashboard</title>
+  <button onclick="logout()">Logout</button>
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <style>
+    /* Table Styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 16px;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f4f4f4;
+      cursor: pointer;
+      position: relative;
+    }
+
+    th span {
+      margin-left: 8px;
+      font-size: 12px;
+      color: #666;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    /* Modal Styling */
+    #factsheet-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #factsheet-content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      width: 50%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #factsheet-content h2 {
+      margin-top: 0;
+    }
+
+    #factsheet-content button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    #factsheet-content button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+  <script>
+    let proposals = [];
+    let currentSortField = null;
+    let currentSortDirection = 'asc'; // Default sorting direction
+
+    async function fetchProposals() {
+      const response = await fetch('/proposals');
+      const data = await response.json();
+
+      if (data.proposals) {
+        proposals = data.proposals;
+        renderTable(proposals);
+      }
+    }
+
+    function renderTable(proposals) {
+  const tableBody = document.getElementById('proposals-table-body');
+  tableBody.innerHTML = '';
+
+  proposals.forEach(proposal => {
+    const priorityText = proposal.priority === "1" ? "High" : proposal.priority === "2" ? "Medium" : "Low";
+
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${proposal.title}</td>
+      <td>${proposal.createdBy}</td>
+      <td>${priorityText}</td>
+      <td>${proposal.status}</td>
+      <td><button onclick="openFactsheet(${proposal.id})">View</button></td>
+    `;
+    tableBody.appendChild(row);
+  });
+
+  console.log('Table rendered with proposals:', proposals); // Debugging log
+}
+
+    function sortTable(field) {
+  // Toggle sorting direction if the same column is clicked
+  if (currentSortField === field) {
+    currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+  } else {
+    currentSortField = field;
+    currentSortDirection = 'asc'; // Default to ascending when switching columns
+  }
+
+  console.log(`Sorting by: ${field}, Direction: ${currentSortDirection}`); // Debugging log
+
+  // Sort proposals based on the field and direction
+  proposals.sort((a, b) => {
+    let comparison = 0;
+
+    // Handle numeric sorting for priority
+    if (field === 'priority') {
+      comparison = parseInt(a[field]) - parseInt(b[field]);
+    } else {
+      // Handle string sorting
+      comparison = a[field].localeCompare(b[field]);
+    }
+
+    return currentSortDirection === 'asc' ? comparison : -comparison;
+  });
+
+  console.log('Proposals after sorting:', proposals); // Debugging log
+
+  // Update table headers to show sorting direction
+  updateTableHeaders(field);
+
+  // Re-render the table
+  renderTable(proposals);
+}
+
+function updateTableHeaders(sortedField) {
+  const headers = document.querySelectorAll('th');
+  headers.forEach(header => {
+    const field = header.getAttribute('data-field');
+    const span = header.querySelector('span');
+
+    if (span) { // Ensure the span exists
+      if (field === sortedField) {
+        span.textContent = currentSortDirection === 'asc' ? '▲' : '▼';
+      } else {
+        span.textContent = ''; // Clear sorting indicator for other columns
+      }
+    }
+  });
+}
+
+    function openFactsheet(proposalId) {
+      const proposal = proposals.find(p => p.id === proposalId);
+      if (proposal) {
+        const priorityText = proposal.priority === "1" ? "High" : proposal.priority === "2" ? "Medium" : "Low";
+
+        const factsheetContent = `
+          <h2>Proposal Details</h2>
+          <p><strong>Title:</strong> ${proposal.title}</p>
+          <p><strong>Description:</strong> ${proposal.description}</p>
+          <p><strong>Created By:</strong> ${proposal.createdBy}</p>
+          <p><strong>Priority:</strong> ${priorityText}</p>
+          <p><strong>Status:</strong> ${proposal.status}</p>
+          <p><strong>Timestamp:</strong> ${new Date(proposal.timestamp).toLocaleString()}</p>
+          <button onclick="closeFactsheet()">Close</button>
+        `;
+
+        const factsheetModal = document.getElementById('factsheet-modal');
+        const factsheetContentDiv = document.getElementById('factsheet-content');
+        factsheetContentDiv.innerHTML = factsheetContent;
+        factsheetModal.style.display = 'flex';
+      }
+    }
+
+    function closeFactsheet() {
+      const factsheetModal = document.getElementById('factsheet-modal');
+      factsheetModal.style.display = 'none';
+    }
+
+    window.onload = fetchProposals;
+
+    async function logout() {
+      const response = await fetch('/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const result = await response.json();
+      if (result.result === 'success') {
+        alert('Logged out successfully!');
+        window.location.href = '/login.html'; // Redirect to login page
+      } else {
+        alert('Failed to log out: ' + result.message);
+      }
+    }
+
+  </script>
+</head>
+<body>
+  <h1>Manager Dashboard</h1>
+  <h2>Proposals</h2>
+  <table>
+    <thead>
+      <tr>
+        <th data-field="title" onclick="sortTable('title')">Title <span></span></th>
+        <th data-field="createdBy" onclick="sortTable('createdBy')">Employee <span></span></th>
+        <th data-field="priority" onclick="sortTable('priority')">Priority <span></span></th>
+        <th data-field="status" onclick="sortTable('status')">Status <span></span></th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="proposals-table-body"></tbody>
+  </table>
+
+  <!-- Modal for Factsheet -->
+  <div id="factsheet-modal">
+    <div id="factsheet-content"></div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Dashboard</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <script>
+  async function logout() {
+    const response = await fetch('/logout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    const result = await response.json();
+    if (result.result === 'success') {
+      alert('Logged out successfully!');
+      window.location.href = '/login.html'; // Redirect to login page
+    } else {
+      alert('Failed to log out: ' + result.message);
+    }
+  }
+    async function createProposal() {
+      const title = document.getElementById('title').value;
+      const description = document.getElementById('description').value;
+      const priority = document.getElementById('priority').value;
+
+      const response = await fetch('/create-proposal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description, priority })
+      });
+
+      const result = await response.json();
+      if (result.result === "success") {
+        alert('Proposal created successfully!');
+        document.getElementById('proposal-form').reset();
+      } else {
+        alert('Failed to create proposal: ' + result.message);
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1>Employee Dashboard</h1>
+  <button onclick="logout()">Logout</button>
+  <h2>Create a Project Proposal</h2>
+  <form id="proposal-form" onsubmit="event.preventDefault(); createProposal();">
+    <label for="title">Title:</label><br>
+    <input type="text" id="title" name="title" required><br><br>
+    <label for="description">Description:</label><br>
+    <textarea id="description" name="description" required></textarea><br><br>
+    <label for="priority">Priority:</label><br>
+    <select id="priority" name="priority" required>
+      <option value="1">High</option>
+      <option value="2">Medium</option>
+      <option value="3">Low</option>
+    </select><br><br>
+    <button type="submit">Submit Proposal</button>
+  </form>
+</body>
+</html>

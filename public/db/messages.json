@@ -1,3 +1,14 @@
 [
-  
+  {
+    "sender": "test",
+    "receiver": "someOtherUser",
+    "content": "fsfr",
+    "timestamp": "2025-04-29T07:41:24.123Z"
+  },
+  {
+    "sender": "test",
+    "receiver": "someOtherUser",
+    "content": "wfw",
+    "timestamp": "2025-04-29T07:41:25.745Z"
+  }
 ]
