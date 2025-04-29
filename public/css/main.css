@@ -1,0 +1,185 @@
+* {
+	box-sizing: content-box;
+	margin: 0;
+	padding: 0;
+	font-family: "Poppins", sans-serif;
+}
+
+nav {
+	height: 7vh;
+	background-color: #A4B07E;
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
+}
+
+nav a {
+	text-decoration: none;
+	color: black;
+	padding-right: 15px;
+	padding-left: 15px;
+}
+
+nav a:hover {
+	color: whitesmoke;
+}
+
+.company {
+	font-style: italic;
+	font-size: large;
+	font-weight: bold;
+	font-size: 20px;
+	color: whitesmoke;
+}
+
+.container {
+	background: whitesmoke;
+	display: grid;
+	height: 86vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.container-grid2 {
+	background: whitesmoke;
+	display: grid;
+	grid-template-columns: repeat(2,1fr);
+	height: 86vh;
+}
+
+.position-left {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	color: black;
+	align-items: flex-start;
+	padding-left: 200px;
+}
+
+.position-left h1 {
+	margin-bottom: 30px;
+	font-size: 50px;
+}
+
+.position-left p {
+	margin-bottom: 30px;
+	font-size: 25px;
+}
+
+.position-left button {
+	border: none;
+	font-size: 25px;
+	color: whitesmoke;
+	background-color: #A4B07E;
+	border-radius: 60px;
+	cursor: pointer;
+	padding: 8px 60px;
+}
+
+.position-left button:hover {
+	background-color: #707C4F;
+}
+
+.position-right {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	color: black;
+}
+
+.position-login-mask{
+	width: 400px;
+	height: 400px;
+	background-color: #A4B07E;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	color: black;
+	border-radius: 10px;
+	border: 3px solid black;
+}
+
+.position-login-mask h1 {
+	margin-bottom: 40px;
+	font-size: 40px;
+	color: whitesmoke;
+}
+
+.position-login-mask p {
+	margin-bottom: 0px;
+	font-size: 15px;
+	color: whitesmoke;;
+}
+
+.position-login-mask a {
+	text-decoration: none;
+	color: whitesmoke;
+
+}
+
+.position-login-mask a:hover {
+	color: black;
+}
+
+.position-login-mask a.button {
+	text-decoration: none;
+	align-content: center;
+	text-align: center;
+	width: 80%;
+	height: 40px;
+	border: none;
+	font-size: 15px;
+	color: whitesmoke;
+	background-color: black;
+	border-radius: 60px;
+	cursor: pointer;
+	margin-bottom: 20px;
+	margin-top: 20px;
+	
+}
+
+.input-box {
+	width: 80%;
+	height: 40px;
+	border: 3px solid black;
+	border-radius: 60px;
+	color: whitesmoke;
+	cursor: pointer;
+	margin-bottom: 20px;
+}
+
+.input-box input {
+	width: 90%;
+	height: 100%;
+	background: transparent;
+	border: none;
+	outline: none;
+	padding: 0px 20px;
+	font-size: 15px;
+	color: whitesmoke;
+}
+
+.input-box input::placeholder {
+	color: whitesmoke;
+}
+
+.homepage {
+	width: 75%;
+	height: 75%;
+}
+
+.olive {
+	color: #707C4F;
+}
+
+.footer {
+	height: 7vh;
+	background-color: #A4B07E;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-weight: bold;
+}
