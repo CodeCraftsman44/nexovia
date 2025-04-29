@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 
-const usersPath = path.join('C:\\Users\\matko\\OneDrive\\Desktop\\website\\public\\db','users.json');
+const usersPath = path.join(__dirname, 'public', 'db', 'users.json');
 const data = fs.readFileSync(usersPath, 'utf8');
 const users = JSON.parse(data);
 
