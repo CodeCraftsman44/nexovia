@@ -5,21 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Employee Dashboard</title>
   <link rel="stylesheet" href="/css/dashboard.css">
-  <script>
-  async function logout() {
-    const response = await fetch('/logout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' }
-    });
-
-    const result = await response.json();
-    if (result.result === 'success') {
-      alert('Logged out successfully!');
-      window.location.href = '/login.html'; // Redirect to login page
-    } else {
-      alert('Failed to log out: ' + result.message);
-    }
+  <style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 0;
+    padding: 20px 20px 0 20px; 
   }
+
+  h1, h2 {
+    color: #333;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+    text-align: left;
+  }
+
+  th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+  }
+
+  th {
+    background-color: #f4f4f4;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  tr:hover {
+    background-color: #f1f1f1;
+  }
+</style>
+  <script>
+    let proposals = [];
+
+    async function fetchEmployeeProposals() {
+      const response = await fetch('/proposals');
+      const data = await response.json();
+
+      if (data.proposals) {
+        const username = getCookie('sessionUsername'); // Get the logged-in employee's username
+        proposals = data.proposals.filter(proposal => proposal.createdBy === username);
+        renderTable(proposals);
+      }
+    }
+
     async function createProposal() {
       const title = document.getElementById('title').value;
       const description = document.getElementById('description').value;
@@ -34,17 +70,62 @@
       const result = await response.json();
       if (result.result === "success") {
         alert('Proposal created successfully!');
-        document.getElementById('proposal-form').reset();
+        document.getElementById('proposal-form').reset(); // Clear the form
+        fetchEmployeeProposals(); // Refresh the proposals table
       } else {
         alert('Failed to create proposal: ' + result.message);
+      }
+    }
+
+    function renderTable(proposals) {
+      const tableBody = document.getElementById('proposals-table-body');
+      tableBody.innerHTML = '';
+
+      proposals.forEach(proposal => {
+        const priorityText = proposal.priority === "1" ? "High" : proposal.priority === "2" ? "Medium" : "Low";
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${proposal.title}</td>
+          <td>${priorityText}</td>
+          <td>${proposal.status}</td>
+          <td>${new Date(proposal.timestamp).toLocaleString()}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    window.onload = fetchEmployeeProposals;
+
+    async function logout() {
+      const response = await fetch('/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const result = await response.json();
+      if (result.result === 'success') {
+        alert('Logged out successfully!');
+        window.location.href = '/login.html'; // Redirect to login page
+      } else {
+        alert('Failed to log out: ' + result.message);
       }
     }
   </script>
 </head>
 <body>
   <h1>Employee Dashboard</h1>
-  <button onclick="logout()">Logout</button>
+  <!-- Logout Button -->
+  <button id = "logoutbtn"onclick="logout()" >Logout</button>
+  <h2>Test</h2>
   <h2>Create a Project Proposal</h2>
+ 
   <form id="proposal-form" onsubmit="event.preventDefault(); createProposal();">
     <label for="title">Title:</label><br>
     <input type="text" id="title" name="title" required><br><br>
@@ -58,5 +139,18 @@
     </select><br><br>
     <button type="submit">Submit Proposal</button>
   </form>
+
+  <h2>Your Proposals</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Priority</th>
+        <th>Status</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody id="proposals-table-body"></tbody>
+  </table>
 </body>
 </html>
