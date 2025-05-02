@@ -15,9 +15,10 @@ document.getElementById('loginSubmit').addEventListener('click', async function(
     body: JSON.stringify({ loginUsr, loginPW })
   });
   
+  // Check if the response is ok and redirect to the appropriate page
   const data = await response.json();
     if (data.result === "true"){
-      window.location.href = "chat.html";
+      window.location.href = data.redirect;
       document.getElementById("wrongInput").textContent = "";
     } else {
       document.getElementById("wrongInput").textContent = "The Username or Password is Incorrect";

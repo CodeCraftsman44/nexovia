@@ -1,20 +1,20 @@
 [
   {
-    "username": "Alice",
-    "password": "password123",
-    "userId": "1",
-    "role": "employee"
-  },
-  {
-    "username": "Bob",
-    "password": "123",
-    "userId": "2",
-    "role": "employee"
-  },
-  {
+    "userId": 1,
     "username": "manager",
-    "password": "manager123",
-    "userId": "3",
-    "role": "manager"
+    "password": "1234",
+    "role": "employee"
+  },
+  {
+    "userId": 2,
+    "username": "user",
+    "password": "1234",
+    "role": "employee"
+  },
+  {
+    "userId": 3,
+    "username": "bob",
+    "password": "1234",
+    "role": "employee"
   }
 ]
