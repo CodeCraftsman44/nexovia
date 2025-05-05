@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 
-const usersPath = path.join(__dirname, 'public', 'db', 'users.json');
+const usersPath = path.join('C:\\Users\\matko\\OneDrive\\Desktop\\nexovia-1\\public\\db','users.json');
 const data = fs.readFileSync(usersPath, 'utf8');
 const users = JSON.parse(data);
 
@@ -44,7 +44,6 @@ app.get('/chat.html', (req, res) => {
 });
 
 // Handle login requests
-app.js
 app.post('/login', (req, res) => {
   const userInput = req.body;
 
@@ -77,18 +76,19 @@ app.post('/signup', (req, res) => {
     for(const user of users){
       if (user.username === userInput.signupUsr){
          // Username already exists
-        result = ({"result": "false"})
-        return res.send(result);
+         res.json({ result: "false" });
       }
     } 
 
     const newUser = {
+      userId: users.length + 1,
       username: userInput.signupUsr,
       password: userInput.signupPW, 
-      userId: users.length + 1
+      role: "employee" // Default role
     };
+
     users.push(newUser);
-    // Replcer = null, 2 = spaces
+    // Replacer = null, 2 = spaces
     fs.writeFileSync(usersPath, JSON.stringify(users, null, 2));
   
     const sessionId = uuidv4();
@@ -96,9 +96,8 @@ app.post('/signup', (req, res) => {
     req.session.username = userInput.signupUsr; 
     // Store username in the cookie
     res.cookie('sessionUsername', userInput.signupUsr, { maxAge: 3600000, path: '/' });
-    console.log(`New user ${user.username} signed up with session ID: ${sessionId}`);
-    result = ({"result": "true"})
-    return res.send(result);
+    console.log(`New user ${userInput.signupUsr} signed up with session ID: ${sessionId}`);
+    return res.json({ result: "true", redirect: '/employee.html' });
 });
 
 // Handle logout requests

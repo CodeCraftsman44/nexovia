@@ -16,7 +16,7 @@ document.getElementById('signupSubmit').addEventListener('click', async function
     
     const data = await response.json();
       if (data.result === "true"){
-        window.location.href = "chat.html";
+        window.location.href = data.redirect;
         document.getElementById("userExists").textContent = "";
       } else {
         document.getElementById("userExists").textContent = "The Username is already taken!";
