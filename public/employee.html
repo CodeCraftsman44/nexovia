@@ -4,153 +4,303 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Employee Dashboard</title>
-  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/main.css">
   <style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    padding: 0;
-    padding: 20px 20px 0 20px; 
-  }
-
-  h1, h2 {
-    color: #333;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    font-size: 16px;
-    text-align: left;
-  }
-
-  th, td {
-    padding: 12px;
-    border: 1px solid #ddd;
-  }
-
-  th {
-    background-color: #f4f4f4;
-  }
-
-  tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-
-  tr:hover {
-    background-color: #f1f1f1;
-  }
-</style>
-  <script>
-    let proposals = [];
-
-    async function fetchEmployeeProposals() {
-      const response = await fetch('/proposals');
-      const data = await response.json();
-
-      if (data.proposals) {
-        const username = getCookie('sessionUsername'); // Get the logged-in employee's username
-        proposals = data.proposals.filter(proposal => proposal.createdBy === username);
-        renderTable(proposals);
-      }
+    /* Additional styles for the employee dashboard */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
     }
 
-    async function createProposal() {
-      const title = document.getElementById('title').value;
-      const description = document.getElementById('description').value;
-      const priority = document.getElementById('priority').value;
+    nav {
+      background-color: #A4B07E;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-      const response = await fetch('/create-proposal', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, description, priority })
-      });
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px;
+      font-size: 16px;
+    }
 
-      const result = await response.json();
-      if (result.result === "success") {
-        alert('Proposal created successfully!');
-        document.getElementById('proposal-form').reset(); // Clear the form
-        fetchEmployeeProposals(); // Refresh the proposals table
-      } else {
-        alert('Failed to create proposal: ' + result.message);
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      padding: 20px;
+    }
+
+    .position-left, .position-right {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin: 10px;
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .position-left h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    form input, form textarea, form select, form button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    form button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    form button:hover {
+      background-color: #0056b3;
+    }
+
+    .position-right h2 {
+      color: #A4B07E;
+      margin-bottom: 20px;
+    }
+
+    .table-container {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table th, table td {
+      text-align: left;
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+
+    table th {
+      background-color: #A4B07E;
+      color: white;
+      position: sticky;
+      top: 0;
+    }
+
+    table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 10px 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
       }
+
+      .position-left, .position-right {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <button onclick="logout()" style="background-color: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
+    Logout</button>
+  </nav>
+
+  <div class="container">
+    <div class="position-left">
+      <h1>Employee Dashboard</h1>
+      <form onsubmit="event.preventDefault(); createProposal();">
+        <label for="proposal-title">Title:</label>
+        <input type="text" id="proposal-title" placeholder="Enter proposal title" required>
+        <label for="proposal-description">Description:</label>
+        <textarea id="proposal-description" placeholder="Enter proposal description" required></textarea>
+        <label for="proposal-priority">Priority:</label>
+        <select id="proposal-priority">
+          <option value="1">High</option>
+          <option value="2">Medium</option>
+          <option value="3">Low</option>
+        </select>
+        <button type="submit">Submit Proposal</button>
+      </form>
+    </div>
+    <div class="position-right">
+      <h2>Proposals</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Employee</th>
+              <th>Priority</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="proposals-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    &copy; 2025 Your Company Name
+  </footer>
+
+  <script>
+    let proposals = [];
+    let socket;
+    let username;
+
+    function initWebSocket(user, role) {
+      username = user;
+      socket = new WebSocket("ws://localhost:7777");
+
+      socket.onopen = () => {
+        socket.send(JSON.stringify({ type: "login", data: { username, role } }));
+      };
+
+      socket.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+
+        if (message.type === "proposals") {
+          proposals = message.data;
+          renderTable(proposals);
+        } else if (message.type === "newProposal") {
+          proposals.push(message.data);
+          renderTable(proposals);
+        }
+      };
     }
 
     function renderTable(proposals) {
-      const tableBody = document.getElementById('proposals-table-body');
-      tableBody.innerHTML = '';
+      const tableBody = document.getElementById("proposals-table-body");
+      tableBody.innerHTML = "";
 
-      proposals.forEach(proposal => {
+      proposals.forEach((proposal) => {
         const priorityText = proposal.priority === "1" ? "High" : proposal.priority === "2" ? "Medium" : "Low";
 
-        const row = document.createElement('tr');
+        const row = document.createElement("tr");
         row.innerHTML = `
           <td>${proposal.title}</td>
+          <td>${proposal.createdBy}</td>
           <td>${priorityText}</td>
           <td>${proposal.status}</td>
-          <td>${new Date(proposal.timestamp).toLocaleString()}</td>
         `;
         tableBody.appendChild(row);
       });
     }
 
-    function getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-    }
+    function createProposal() {
+      const title = document.getElementById("proposal-title").value;
+      const description = document.getElementById("proposal-description").value;
+      const priority = document.getElementById("proposal-priority").value;
 
-    window.onload = fetchEmployeeProposals;
-
-    async function logout() {
-      const response = await fetch('/logout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-      const result = await response.json();
-      if (result.result === 'success') {
-        alert('Logged out successfully!');
-        window.location.href = '/login.html'; // Redirect to login page
-      } else {
-        alert('Failed to log out: ' + result.message);
+      if (!title || !description || !priority) {
+        alert("Please fill out all fields");
+        return;
       }
-    }
-  </script>
-</head>
-<body>
-  <h1>Employee Dashboard</h1>
-  <!-- Logout Button -->
-  <button id = "logoutbtn"onclick="logout()" >Logout</button>
-  <h2>Test</h2>
-  <h2>Create a Project Proposal</h2>
- 
-  <form id="proposal-form" onsubmit="event.preventDefault(); createProposal();">
-    <label for="title">Title:</label><br>
-    <input type="text" id="title" name="title" required><br><br>
-    <label for="description">Description:</label><br>
-    <textarea id="description" name="description" required></textarea><br><br>
-    <label for="priority">Priority:</label><br>
-    <select id="priority" name="priority" required>
-      <option value="1">High</option>
-      <option value="2">Medium</option>
-      <option value="3">Low</option>
-    </select><br><br>
-    <button type="submit">Submit Proposal</button>
-  </form>
 
-  <h2>Your Proposals</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Priority</th>
-        <th>Status</th>
-        <th>Timestamp</th>
-      </tr>
-    </thead>
-    <tbody id="proposals-table-body"></tbody>
-  </table>
+      socket.send(
+        JSON.stringify({
+          type: "createProposal",
+          data: { title, description, priority, createdBy: username },
+        })
+      );
+
+      document.getElementById("proposal-title").value = "";
+      document.getElementById("proposal-description").value = "";
+      document.getElementById("proposal-priority").value = "1";
+    }
+
+    window.onload = async () => {
+      try {
+        const loggedInUsername = new URLSearchParams(window.location.search).get("username");
+        console.log("Logged-in username:", loggedInUsername);
+
+        if (!loggedInUsername) {
+          throw new Error("Username is missing. Please log in again.");
+        }
+
+        const response = await fetch(`/api/user?username=${loggedInUsername}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch user information");
+        }
+
+        const userData = await response.json();
+        console.log("User data fetched:", userData);
+        initWebSocket(loggedInUsername, userData.role);
+
+        document.getElementById("dashboard-section").style.display = "block";
+      } catch (error) {
+        console.error("Error fetching user information:", error);
+        alert("Failed to load user information. Please log in again.");
+      }
+    };
+    function logout() {
+    const username = new URLSearchParams(window.location.search).get("username");
+
+    fetch("/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ username })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.result === "success") {
+        // Optionally close the WebSocket connection
+        if (socket && socket.readyState === WebSocket.OPEN) {
+          socket.close();
+        }
+
+        // Redirect to login page
+        window.location.href = "/login.html";
+      } else {
+        alert("Logout failed: " + data.message);
+      }
+    })
+    .catch((err) => {
+      console.error("Logout error:", err);
+      alert("An error occurred while logging out.");
+    });
+  }
+  </script>
 </body>
 </html>

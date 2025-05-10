@@ -3,7 +3,7 @@
     "userId": 1,
     "username": "manager",
     "password": "1234",
-    "role": "employee"
+    "role": "manager"
   },
   {
     "userId": 2,

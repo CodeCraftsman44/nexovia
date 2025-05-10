@@ -124,7 +124,7 @@ nav a:hover {
 	color: black;
 }
 
-.position-login-mask a.button {
+.button {
 	text-decoration: none;
 	align-content: center;
 	text-align: center;
@@ -140,7 +140,9 @@ nav a:hover {
 	margin-top: 20px;
 	
 }
-
+.button:hover {
+  background-color: #333;
+}
 .input-box {
 	width: 80%;
 	height: 40px;

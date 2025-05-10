@@ -4,236 +4,420 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manager Dashboard</title>
-  <button onclick="logout()">Logout</button>
-  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/main.css">
   <style>
-    /* Table Styling */
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav {
+      background-color: #2c3e50;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-size: 16px;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #1abc9c;
+    }
+
+    .header {
+      text-align: center;
+      padding: 20px;
+      background-color: #1abc9c;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      padding: 20px;
+    }
+
+    .position-left, .position-right {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin: 10px;
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .position-right h2 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    .table-container {
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 20px 0;
-      font-size: 16px;
-      text-align: left;
     }
 
-    th, td {
+    table th, table td {
+      text-align: left;
       padding: 12px;
       border: 1px solid #ddd;
     }
 
-    th {
-      background-color: #f4f4f4;
-      cursor: pointer;
-      position: relative;
+    table th {
+      background-color: #2c3e50;
+      color: white;
+      position: sticky;
+      top: 0;
     }
+    
 
-    th span {
-      margin-left: 8px;
-      font-size: 12px;
-      color: #666;
-    }
-
-    tr:nth-child(even) {
+    table tr:nth-child(even) {
       background-color: #f9f9f9;
     }
 
-    tr:hover {
+    table tr:hover {
       background-color: #f1f1f1;
     }
 
-    /* Modal Styling */
-    #factsheet-modal {
+    table td button {
+      background-color: #1abc9c;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    table td button:hover {
+      background-color: #16a085;
+    }
+
+    footer {
+      background-color: #2c3e50;
+      color: white;
+      text-align: center;
+      padding: 10px 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .position-left, .position-right {
+        min-width: 100%;
+      }
+    }
+
+    /* Modal styles */
+    .modal {
       display: none;
       position: fixed;
-      top: 0;
+      z-index: 1000;
       left: 0;
+      top: 0;
       width: 100%;
       height: 100%;
+      overflow: auto;
       background-color: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
+      animation: fadeIn 0.3s ease;
     }
 
-    #factsheet-content {
-      background-color: #fff;
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
       padding: 20px;
-      border-radius: 8px;
+      border: 1px solid #888;
       width: 50%;
+      border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      animation: slideIn 0.3s ease;
     }
 
-    #factsheet-content h2 {
-      margin-top: 0;
+    .modal-header {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #2c3e50;
     }
 
-    #factsheet-content button {
-      margin-top: 20px;
+    .modal-buttons button {
+      margin: 5px;
       padding: 10px 20px;
-      background-color: #007bff;
-      color: white;
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
     }
 
-    #factsheet-content button:hover {
+    .approve-btn {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .approve-btn:hover {
+      background-color: #218838;
+    }
+
+    .deny-btn {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .deny-btn:hover {
+      background-color: #c82333;
+    }
+
+    .reset-btn {
+      background-color: #ffc107;
+      color: black;
+    }
+
+    .reset-btn:hover {
+      background-color: #e0a800;
+    }
+
+    .close-btn {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .close-btn:hover {
       background-color: #0056b3;
     }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-50px);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
   </style>
+</head>
+<body>
+  <nav>
+    <button onclick="logout()" style="background-color: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
+    Logout
+  </button>
+  </nav>
+
+  <div class="header">Manager Dashboard</div>
+
+  <div class="container">
+    
+    <div class="position-right">
+      <h2>Proposals</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Employee</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="proposals-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    &copy; 2025 Your Company Name
+  </footer>
+
+  <!-- Modal for Proposal Details -->
+  <div id="proposal-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">Proposal Details</div>
+      <div id="proposal-details"></div>
+      <div class="modal-buttons">
+        <button class="approve-btn" onclick="updateProposalStatus('Approved')">Approve</button>
+        <button class="deny-btn" onclick="updateProposalStatus('Denied')">Deny</button>
+        <button class="reset-btn" onclick="updateProposalStatus('Pending')">Reset to Pending</button>
+        <button class="close-btn" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     let proposals = [];
-    let currentSortField = null;
-    let currentSortDirection = 'asc'; // Default sorting direction
+    let selectedProposalId = null;
+    let socket;
 
-    async function fetchProposals() {
-      const response = await fetch('/proposals');
-      const data = await response.json();
+    function initWebSocket() {
+      socket = new WebSocket("ws://localhost:7777");
 
-      if (data.proposals) {
-        proposals = data.proposals;
-        renderTable(proposals);
-      }
+      socket.onopen = () => {
+        console.log("WebSocket connection established");
+        socket.send(JSON.stringify({ type: "fetchProposals" }));
+      };
+
+      socket.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+
+        if (message.type === "proposals") {
+          proposals = message.data;
+          renderTable(proposals);
+        } else if (message.type === "updateProposal") {
+          const updatedProposal = message.data;
+          const index = proposals.findIndex((p) => p.id === updatedProposal.id);
+          if (index !== -1) {
+            proposals[index] = updatedProposal;
+            renderTable(proposals);
+          }
+        }
+      };
+
+      socket.onclose = () => {
+        console.log("WebSocket connection closed");
+      };
+    }
+
+    function fetchProposals() {
+      fetch("/api/proposals")
+        .then((response) => response.json())
+        .then((data) => {
+          proposals = data;
+          renderTable(proposals);
+        })
+        .catch((error) => console.error("Error fetching proposals:", error));
     }
 
     function renderTable(proposals) {
-  const tableBody = document.getElementById('proposals-table-body');
-  tableBody.innerHTML = '';
+      const tableBody = document.getElementById("proposals-table-body");
+      tableBody.innerHTML = "";
 
-  proposals.forEach(proposal => {
-    const priorityText = proposal.priority === "1" ? "High" : proposal.priority === "2" ? "Medium" : "Low";
+      proposals.forEach((proposal) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${proposal.title}</td>
+          <td>${proposal.createdBy}</td>
+          <td>${proposal.priority}</td>
+          <td>${proposal.status}</td>
+          <td><button onclick="viewProposal(${proposal.id})">View</button></td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
 
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${proposal.title}</td>
-      <td>${proposal.createdBy}</td>
-      <td>${priorityText}</td>
-      <td>${proposal.status}</td>
-      <td><button onclick="openFactsheet(${proposal.id})">View</button></td>
-    `;
-    tableBody.appendChild(row);
-  });
+    function viewProposal(id) {
+      const proposal = proposals.find((p) => p.id === id);
+      selectedProposalId = id;
 
-  console.log('Table rendered with proposals:', proposals); // Debugging log
-}
+      const details = `
+        <p><strong>Title:</strong> ${proposal.title}</p>
+        <p><strong>Created By:</strong> ${proposal.createdBy}</p>
+        <p><strong>Priority:</strong> ${proposal.priority}</p>
+        <p><strong>Status:</strong> ${proposal.status}</p>
+        <p><strong>Description:</strong> ${proposal.description}</p>
+      `;
+      document.getElementById("proposal-details").innerHTML = details;
 
-    function sortTable(field) {
-  // Toggle sorting direction if the same column is clicked
-  if (currentSortField === field) {
-    currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
-  } else {
-    currentSortField = field;
-    currentSortDirection = 'asc'; // Default to ascending when switching columns
+      document.getElementById("proposal-modal").style.display = "block";
+    }
+
+    function updateProposalStatus(status) {
+      const proposal = proposals.find((p) => p.id === selectedProposalId);
+      if (!proposal) return;
+
+      fetch(`/api/proposals/${proposal.id}/status`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      })
+        .then((response) => response.json())
+        .then((updatedProposal) => {
+          const index = proposals.findIndex((p) => p.id === updatedProposal.id);
+          if (index !== -1) {
+            proposals[index] = updatedProposal;
+            renderTable(proposals);
+          }
+          closeModal();
+        })
+        .catch((error) => console.error("Error updating proposal status:", error));
+    }
+
+    function closeModal() {
+      document.getElementById("proposal-modal").style.display = "none";
+    }
+    function logout() {
+  const username = new URLSearchParams(window.location.search).get("username");
+
+  if (!username) {
+    alert("No username found in URL");
+    return;
   }
 
-  console.log(`Sorting by: ${field}, Direction: ${currentSortDirection}`); // Debugging log
-
-  // Sort proposals based on the field and direction
-  proposals.sort((a, b) => {
-    let comparison = 0;
-
-    // Handle numeric sorting for priority
-    if (field === 'priority') {
-      comparison = parseInt(a[field]) - parseInt(b[field]);
+  fetch("/logout", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ username })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.result === "success") {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.close();
+      }
+      window.location.href = "/login.html";
     } else {
-      // Handle string sorting
-      comparison = a[field].localeCompare(b[field]);
+      alert("Logout failed: " + data.message);
     }
-
-    return currentSortDirection === 'asc' ? comparison : -comparison;
-  });
-
-  console.log('Proposals after sorting:', proposals); // Debugging log
-
-  // Update table headers to show sorting direction
-  updateTableHeaders(field);
-
-  // Re-render the table
-  renderTable(proposals);
-}
-
-function updateTableHeaders(sortedField) {
-  const headers = document.querySelectorAll('th');
-  headers.forEach(header => {
-    const field = header.getAttribute('data-field');
-    const span = header.querySelector('span');
-
-    if (span) { // Ensure the span exists
-      if (field === sortedField) {
-        span.textContent = currentSortDirection === 'asc' ? '▲' : '▼';
-      } else {
-        span.textContent = ''; // Clear sorting indicator for other columns
-      }
-    }
+  })
+  .catch(err => {
+    console.error("Logout error:", err);
+    alert("An error occurred while logging out.");
   });
 }
 
-    function openFactsheet(proposalId) {
-      const proposal = proposals.find(p => p.id === proposalId);
-      if (proposal) {
-        const priorityText = proposal.priority === "1" ? "High" : proposal.priority === "2" ? "Medium" : "Low";
 
-        const factsheetContent = `
-          <h2>Proposal Details</h2>
-          <p><strong>Title:</strong> ${proposal.title}</p>
-          <p><strong>Description:</strong> ${proposal.description}</p>
-          <p><strong>Created By:</strong> ${proposal.createdBy}</p>
-          <p><strong>Priority:</strong> ${priorityText}</p>
-          <p><strong>Status:</strong> ${proposal.status}</p>
-          <p><strong>Timestamp:</strong> ${new Date(proposal.timestamp).toLocaleString()}</p>
-          <button onclick="closeFactsheet()">Close</button>
-        `;
-
-        const factsheetModal = document.getElementById('factsheet-modal');
-        const factsheetContentDiv = document.getElementById('factsheet-content');
-        factsheetContentDiv.innerHTML = factsheetContent;
-        factsheetModal.style.display = 'flex';
-      }
-    }
-
-    function closeFactsheet() {
-      const factsheetModal = document.getElementById('factsheet-modal');
-      factsheetModal.style.display = 'none';
-    }
-
-    window.onload = fetchProposals;
-
-    async function logout() {
-      const response = await fetch('/logout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-      const result = await response.json();
-      if (result.result === 'success') {
-        alert('Logged out successfully!');
-        window.location.href = '/login.html'; // Redirect to login page
-      } else {
-        alert('Failed to log out: ' + result.message);
-      }
-    }
-
+    window.onload = () => {
+      initWebSocket();
+      fetchProposals();
+    };
   </script>
-</head>
-<body>
-  <h1>Manager Dashboard</h1>
-  <h2>Proposals</h2>
-  <table>
-    <thead>
-      <tr>
-        <th data-field="title" onclick="sortTable('title')">Title <span></span></th>
-        <th data-field="createdBy" onclick="sortTable('createdBy')">Employee <span></span></th>
-        <th data-field="priority" onclick="sortTable('priority')">Priority <span></span></th>
-        <th data-field="status" onclick="sortTable('status')">Status <span></span></th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="proposals-table-body"></tbody>
-  </table>
-
-  <!-- Modal for Factsheet -->
-  <div id="factsheet-modal">
-    <div id="factsheet-content"></div>
-  </div>
 </body>
 </html>

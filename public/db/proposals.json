@@ -5,7 +5,7 @@
     "description": "Description A",
     "priority": "1",
     "createdBy": "Alice",
-    "status": "pending",
+    "status": "Approved",
     "timestamp": "2025-04-29T08:05:42.920Z"
   },
   {
@@ -13,8 +13,8 @@
     "title": "Project B",
     "description": "Description B",
     "priority": "2",
-    "createdBy": "Bob",
-    "status": "approved",
+    "createdBy": "bob",
+    "status": "Denied",
     "timestamp": "2025-04-29T08:07:02.477Z"
   },
   {
@@ -22,8 +22,8 @@
     "title": "tr",
     "description": "rb",
     "priority": "2",
-    "createdBy": "Bob",
-    "status": "pending",
+    "createdBy": "bob",
+    "status": "Denied",
     "timestamp": "2025-04-29T08:50:44.903Z"
   },
   {
@@ -31,8 +31,8 @@
     "title": "resc c",
     "description": "test description with low prio",
     "priority": "3",
-    "createdBy": "Bob",
-    "status": "pending",
+    "createdBy": "bob",
+    "status": "Denied",
     "timestamp": "2025-04-29T09:17:48.704Z"
   },
   {
@@ -40,8 +40,8 @@
     "title": "vdv",
     "description": "svdv",
     "priority": "1",
-    "createdBy": "Bob",
-    "status": "pending",
+    "createdBy": "bob",
+    "status": "Denied",
     "timestamp": "2025-04-29T09:17:54.910Z"
   },
   {
@@ -49,8 +49,80 @@
     "title": "Projekt 1",
     "description": "blwefierhgelvnrk.e",
     "priority": "2",
-    "createdBy": "Bob",
-    "status": "pending",
+    "createdBy": "bob",
+    "status": "denied",
     "timestamp": "2025-04-29T09:46:50.026Z"
+  },
+  {
+    "id": 7,
+    "title": "test",
+    "description": "-lukzjhdgfszuoh",
+    "priority": "2",
+    "createdBy": "bob",
+    "status": "approved",
+    "timestamp": "2025-05-05T08:40:36.208Z"
+  },
+  {
+    "id": 8,
+    "title": "bob project",
+    "description": "Bob",
+    "priority": "2",
+    "createdBy": "bob",
+    "status": "Approved",
+    "timestamp": "2025-05-06T12:04:19.579Z"
+  },
+  {
+    "id": 9,
+    "title": "ewtger",
+    "description": "dsfdg",
+    "priority": "1",
+    "createdBy": "bob",
+    "status": "Approved",
+    "timestamp": "2025-05-08T16:08:24.669Z"
+  },
+  {
+    "id": 10,
+    "title": "local",
+    "description": "efewrsgv",
+    "priority": "1",
+    "createdBy": "employee",
+    "status": "Denied",
+    "timestamp": "2025-05-08T17:19:50.492Z"
+  },
+  {
+    "id": 11,
+    "title": "zulku",
+    "description": "iuluiglv",
+    "priority": "1",
+    "createdBy": "bob",
+    "status": "Denied",
+    "timestamp": "2025-05-08T18:07:50.786Z"
+  },
+  {
+    "id": 12,
+    "title": "kjb",
+    "description": "lbhnl",
+    "priority": "1",
+    "createdBy": "bob",
+    "status": "Denied",
+    "timestamp": "2025-05-08T18:24:58.445Z"
+  },
+  {
+    "id": 13,
+    "title": "ewsgf",
+    "description": "sdgf",
+    "priority": "3",
+    "createdBy": "bob",
+    "status": "pending",
+    "timestamp": "2025-05-08T18:35:54.967Z"
+  },
+  {
+    "id": 14,
+    "title": "tesre",
+    "description": "etgerg",
+    "priority": "3",
+    "createdBy": "bob",
+    "status": "pending",
+    "timestamp": "2025-05-08T18:45:57.152Z"
   }
 ]
