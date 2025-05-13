@@ -315,14 +315,19 @@
     }
 
     function fetchProposals() {
-      fetch("/api/proposals")
+      const username = new URLSearchParams(window.location.search).get("username");
+      fetch(`/api/proposals?username=${encodeURIComponent(username)}`)
         .then((response) => response.json())
-        .then((data) => {
-          proposals = data;
-          renderTable(proposals);
-        })
-        .catch((error) => console.error("Error fetching proposals:", error));
-    }
+    .then((data) => {
+      if (!Array.isArray(data)) {
+        console.error("Expected array but got:", data);
+        return;
+      }
+      proposals = data;
+      renderTable(proposals);
+    })
+    .catch((error) => console.error("Error fetching proposals:", error));
+}
 
     function renderTable(proposals) {
       const tableBody = document.getElementById("proposals-table-body");

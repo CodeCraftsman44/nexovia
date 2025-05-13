@@ -48,9 +48,9 @@ app.post("/login", (req, res) => {
   }
 
   // Mark the user as logged in
-  loggedInUsers[username] = { username: user.username, role: user.role };
+  loggedInUsers[username] = { username: user.username, role: user.role, departmentId: user.departmentId };
 
-  console.log(`User ${user.username} logged in with role: ${user.role}`);
+  console.log(`User ${user.username} logged in with role: ${user.role} and departmentId: ${user.departmentId}`);
 
 // Redirect based on role
 if (user.role === "manager") {
@@ -90,8 +90,28 @@ app.get("/api/user", (req, res) => {
 
 // Fetch all proposals
 app.get("/api/proposals", (req, res) => {
-  res.json(proposals);
+  const username = req.query.username;
+
+  if (!loggedInUsers[username]) {
+    return res.status(401).json({ error: "Not logged in" });
+  }
+
+  const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+
+  let filteredProposals = [];
+
+  if (user.role === "manager") {
+    filteredProposals = proposals.filter(p => {
+      const creator = users.find(u => u.username.toLowerCase() === p.createdBy.toLowerCase());
+      return creator?.departmentId === user.departmentId;
+    });
+  } else if (user.role === "employee") {
+    filteredProposals = proposals.filter(p => p.createdBy.toLowerCase() === username.toLowerCase());
+  }
+
+  res.json(filteredProposals);
 });
+
 
 // Update a proposal's status
 app.post("/api/proposals/:id/status", (req, res) => {
@@ -121,20 +141,26 @@ wss.on("connection", (ws) => {
 
     if (parsedMessage.type === "login") {
       const { username, role } = parsedMessage.data;
-
+      const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
       let filteredProposals = [];
+      
+      if(user){
       if (role === "manager") {
-        filteredProposals = proposals;
+         filteredProposals = proposals.filter(p => {
+        const creator = users.find(u => u.username.toLowerCase() === p.createdBy.toLowerCase());
+        return creator?.departmentId === user.departmentId;
+      });
       } else if (role === "employee") {
-        filteredProposals = proposals.filter((p) => p.createdBy.toLowerCase() === username.toLowerCase());
+         filteredProposals = proposals.filter(p => p.createdBy.toLowerCase() === user.username.toLowerCase());
       }
-
+      }
       ws.send(JSON.stringify({ type: "proposals", data: filteredProposals }));
     }
 
     if (parsedMessage.type === "createProposal") {
       const { title, description, priority, createdBy } = parsedMessage.data;
-
+     
+      
       const newProposal = {
         id: proposals.length + 1,
         title,

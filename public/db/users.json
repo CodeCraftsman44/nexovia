@@ -3,18 +3,43 @@
     "userId": 1,
     "username": "manager",
     "password": "1234",
-    "role": "manager"
+    "role": "manager",
+    "departmentId": 1
   },
   {
     "userId": 2,
     "username": "user",
     "password": "1234",
-    "role": "employee"
+    "role": "employee",
+    "departmentId": 2
   },
   {
     "userId": 3,
     "username": "bob",
     "password": "1234",
-    "role": "employee"
+    "role": "employee",
+    "departmentId": 1
+  },
+  {
+    "userId": 4,
+    "username": "alice",
+    "password": "1234",
+    "role": "employee",
+    "departmentId": 1
+  },
+  {
+    "userId": 5,
+    "username": "charlie",
+    "password": "1234",
+    "role": "employee",
+    "departmentId": 1
+  },
+  {
+    "userId": 6,
+    "username": "dave",
+    "password": "1234",
+    "role": "manager",
+    "departmentId": 2
   }
+
 ]

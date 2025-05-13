@@ -124,5 +124,32 @@
     "createdBy": "bob",
     "status": "pending",
     "timestamp": "2025-05-08T18:45:57.152Z"
+  },
+  {
+    "id": 15,
+    "title": "testproposal",
+    "description": "thtrhrthr",
+    "priority": "3",
+    "createdBy": "bob",
+    "status": "Approved",
+    "timestamp": "2025-05-13T07:13:47.138Z"
+  },
+  {
+    "id": 16,
+    "title": "testproposal",
+    "description": "wefegera",
+    "priority": "3",
+    "createdBy": "bob",
+    "status": "Denied",
+    "timestamp": "2025-05-13T07:13:55.705Z"
+  },
+  {
+    "id": 17,
+    "title": "charlies proposal",
+    "description": "This project is about charlies project",
+    "priority": "3",
+    "createdBy": "charlie",
+    "status": "pending",
+    "timestamp": "2025-05-13T08:22:08.869Z"
   }
 ]
