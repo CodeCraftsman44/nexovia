@@ -40,6 +40,13 @@
     "password": "1234",
     "role": "manager",
     "departmentId": 2
+  },
+  {
+    "userId": 7,
+    "username": "admin",
+    "password": "1234",
+    "role": "admin",
+    "departmentId": 1
   }
 
 ]

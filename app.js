@@ -17,6 +17,9 @@ const proposalsPath = path.join(__dirname, "public", "db", "proposals.json");
 const users = JSON.parse(fs.readFileSync(usersPath, "utf8"));
 let proposals = JSON.parse(fs.readFileSync(proposalsPath, "utf8"));
 
+const departmentsPath = path.join(__dirname, "public", "db", "departments.json");
+const departments = JSON.parse(fs.readFileSync(departmentsPath, "utf8"));
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -48,7 +51,15 @@ app.post("/login", (req, res) => {
   }
 
   // Mark the user as logged in
-  loggedInUsers[username] = { username: user.username, role: user.role, departmentId: user.departmentId };
+const departmentObj = departments.find(d => d.id === user.departmentId);
+const departmentName = departmentObj ? departmentObj.name : "";
+loggedInUsers[username] = {
+  username: user.username,
+  name: user.name, // if you have a 'name' field in users.json
+  role: user.role,
+  departmentId: user.departmentId,
+  department: departmentName
+};
 
   console.log(`User ${user.username} logged in with role: ${user.role} and departmentId: ${user.departmentId}`);
 
@@ -57,6 +68,8 @@ if (user.role === "manager") {
   return res.json({ result: "success", redirect: `/manager.html?username=${user.username}`, role: "manager" });
 } else if (user.role === "employee") {
   return res.json({ result: "success", redirect: `/employee.html?username=${user.username}`, role: "employee" });
+} else if (user.role === "admin") {
+  return res.json({ result: "success", redirect: `/admin.html?username=${user.username}`, role: "admin" });
 }
 
   res.status(401).json({ result: "error", message: "Invalid username or password" });
@@ -82,6 +95,7 @@ app.get("/api/user", (req, res) => {
   console.log("Logged-in users:", loggedInUsers); // Debug log
 
   if (loggedInUsers[username]) {
+    
     return res.json(loggedInUsers[username]);
   }
 
@@ -131,6 +145,74 @@ app.post("/api/proposals/:id/status", (req, res) => {
 
   res.json(proposal);
 });
+
+//+Admin Functions
+
+
+function getDbFiles() {
+  const dbDir = path.join(__dirname, "public", "db");
+  return fs.readdirSync(dbDir).filter(f => f.endsWith('.json'));
+}
+
+// Admin: List all DB files
+app.get("/api/admin/files", (req, res) => {
+  res.json(getDbFiles());
+});
+
+// Admin: Get data from a JSON file
+app.get("/api/admin/data/:filename", (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(__dirname, "public", "db", filename);
+  if (!fs.existsSync(filePath)) return res.status(404).json({ error: "File not found" });
+  const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+  res.json(data);
+});
+
+// Admin: Create new entry in a JSON file (expects array)
+app.post("/api/admin/data/:filename", (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(__dirname, "public", "db", filename);
+  if (!fs.existsSync(filePath)) return res.status(404).json({ error: "File not found" });
+  let data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+  if (!Array.isArray(data)) return res.status(400).json({ error: "Not an array" });
+  const newItem = req.body;
+  newItem.id = data.length ? Math.max(...data.map(i => i.id || 0)) + 1 : 1;
+  data.push(newItem);
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  res.json(newItem);
+});
+
+// Admin: Update entry by id
+app.put("/api/admin/data/:filename/:id", (req, res) => {
+  const filename = req.params.filename;
+  const id = parseInt(req.params.id);
+  const filePath = path.join(__dirname, "public", "db", filename);
+  if (!fs.existsSync(filePath)) return res.status(404).json({ error: "File not found" });
+  let data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+  const idx = data.findIndex(i => i.id === id);
+  if (idx === -1) return res.status(404).json({ error: "Item not found" });
+  data[idx] = { ...data[idx], ...req.body, id };
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  res.json(data[idx]);
+});
+
+// Admin: Delete entry by id
+app.delete("/api/admin/data/:filename/:id", (req, res) => {
+  const filename = req.params.filename;
+  const id = parseInt(req.params.id);
+  const filePath = path.join(__dirname, "public", "db", filename);
+  if (!fs.existsSync(filePath)) return res.status(404).json({ error: "File not found" });
+  let data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+  const idx = data.findIndex(i => i.id === id);
+  if (idx === -1) return res.status(404).json({ error: "Item not found" });
+  const deleted = data.splice(idx, 1)[0];
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  res.json(deleted);
+});
+
+//-Admin Functions
+
+
 
 // WebSocket connection handling
 wss.on("connection", (ws) => {

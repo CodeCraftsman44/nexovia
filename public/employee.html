@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Employee Dashboard</title>
-  <link rel="stylesheet" href="/css/main.css">
   <style>
-    /* Additional styles for the employee dashboard */
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f9;
@@ -17,10 +15,20 @@
     nav {
       background-color: #A4B07E;
       color: white;
-      padding: 10px 20px;
+      padding: 0 4px;
+      min-height: 14px;
+      font-size: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+
+    #employee-name {
+      font-size: 13px;
+      font-weight: bold;
+      margin-left: 8px;
+      color: #fff;
+      letter-spacing: 0.5px;
     }
 
     nav a {
@@ -38,66 +46,105 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      padding: 20px;
+      padding: 10px;
+      padding-bottom: 80px;
+      gap: 10px;
     }
 
     .position-left, .position-right {
       background: white;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      margin: 10px;
+      padding: 10px;
+      margin: 0;
       flex: 1;
-      min-width: 300px;
+      min-width: 280px;
     }
 
     .position-left h1 {
       color: #333;
       margin-bottom: 20px;
+      font-size: 30px;
     }
+form label {
+  display: block;
+  margin-bottom: 2px;
+  font-weight: bold;
+  font-size: 13px;
+  text-align: left;
+  width: 80%; /* Match input width for alignment */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2px;
+}
 
-    form label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
+    form input,
+form textarea,
+form select {
+  width: 80%;           /* Use only 80% of the available width */
+  margin-left: auto;    /* Center the input fields */
+  margin-right: auto;
+  padding: 6px;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 13px;
+  display: block;
+}
 
-    form input, form textarea, form select, form button {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 14px;
-    }
+form button {
+  width: 90px;
+  min-width: unset;
+  max-width: unset;
+  font-size: 12px;
+  padding: 4px 0;
+  margin: 10px auto 0 auto;
+  border-radius: 4px;
+  display: block;
+  background-color: #A4B07E; /* Olive green */
+  color: #fff;
+  border: none;
+  transition: background 0.2s;
+}
 
-    form button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    form button:hover {
-      background-color: #0056b3;
-    }
+form button:hover {
+  background-color: #7a885e; /* Darker olive on hover */
+}
 
     .position-right h2 {
       color: #A4B07E;
       margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
+    #department-name {
+      font-size: 15px;
+      color: #555;
+      font-weight: normal;
+    }
+    .position-right {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
 
     .table-container {
-      max-height: 300px;
-      overflow-y: auto;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
+  flex: 1 1 auto;
+  max-height: 550px;
+  height: 100%;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: 0;
+}
 
     table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
 
     table th, table td {
       text-align: left;
@@ -115,32 +162,77 @@
     table tr:nth-child(even) {
       background-color: #f9f9f9;
     }
+    table tbody tr:hover {
+  background-color: #e6ecd6;
+  cursor: pointer;
+}
 
     footer {
       background-color: #333;
       color: white;
       text-align: center;
-      padding: 10px 0;
+      padding: 0;
+      font-size: 8px;
+      line-height: 1;
       position: fixed;
       bottom: 0;
       width: 100%;
+      z-index: 10;
+      height: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     @media (max-width: 768px) {
       .container {
         flex-direction: column;
       }
-
       .position-left, .position-right {
         min-width: 100%;
+      }
+    }
+    .position-left form {
+      margin-bottom: 20px;
+    }
+
+    /* Responsive two-column form if viewport height is small */
+    @media (max-height: 700px) {
+      .position-left form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 20px;
+        align-items: start;
+      }
+      .position-left form label,
+      .position-left form input,
+      .position-left form textarea,
+      .position-left form select {
+        width: 100%;
+      }
+      /* Make label+input stack in each cell */
+      .position-left form label {
+        grid-column: span 2;
+      }
+      .position-left form input,
+      .position-left form textarea,
+      .position-left form select {
+        grid-column: span 2;
+      }
+      /* Place button full width at the bottom */
+      .position-left form button {
+        grid-column: span 2;
+        justify-self: center;
       }
     }
   </style>
 </head>
 <body>
   <nav>
+    <span id="employee-name"></span>
     <button onclick="logout()" style="background-color: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
-    Logout</button>
+      Logout
+    </button>
   </nav>
 
   <div class="container">
@@ -151,17 +243,35 @@
         <input type="text" id="proposal-title" placeholder="Enter proposal title" required>
         <label for="proposal-description">Description:</label>
         <textarea id="proposal-description" placeholder="Enter proposal description" required></textarea>
+        <label for="proposal-usage">Usage:</label>
+        <input type="text" id="proposal-usage" placeholder="Describe the usage" required>
+        <label for="proposal-strategic">Strategic Importance:</label>
+        <input type="text" id="proposal-strategic" placeholder="Describe the strategic importance" required>
+        <label for="proposal-duration">Estimated Duration (months):</label>
+        <input type="number" id="proposal-duration" min="1" placeholder="e.g. 6" required>
+        <label for="proposal-workload">Estimated Workload (person-days):</label>
+        <input type="number" id="proposal-workload" min="1" placeholder="e.g. 30" required>
+        <label for="proposal-cost">Estimated Cost:</label>
+        <input type="number" id="proposal-cost" min="0" placeholder="e.g. 1000" required>
+        <label for="proposal-benefit">Estimated Benefit:</label>
+        <input type="number" id="proposal-benefit" min="0" placeholder="e.g. 2000" required>
+        <label for="proposal-risk">Risk Assessment:</label>
+        <input type="text" id="proposal-risk" placeholder="Describe the risk assessment" required>
+        <!--
         <label for="proposal-priority">Priority:</label>
         <select id="proposal-priority">
           <option value="1">High</option>
           <option value="2">Medium</option>
           <option value="3">Low</option>
         </select>
+        -->
         <button type="submit">Submit Proposal</button>
       </form>
     </div>
     <div class="position-right">
-      <h2>Proposals</h2>
+      <h2>
+        Proposals <span id="department-name"></span>
+      </h2>
       <div class="table-container">
         <table>
           <thead>
@@ -229,9 +339,18 @@
     function createProposal() {
       const title = document.getElementById("proposal-title").value;
       const description = document.getElementById("proposal-description").value;
-      const priority = document.getElementById("proposal-priority").value;
+      // const priority = document.getElementById("proposal-priority").value;
 
-      if (!title || !description || !priority) {
+      // Collect all new fields
+      const usage = document.getElementById("proposal-usage").value;
+      const strategic = document.getElementById("proposal-strategic").value;
+      const duration = document.getElementById("proposal-duration").value;
+      const workload = document.getElementById("proposal-workload").value;
+      const cost = document.getElementById("proposal-cost").value;
+      const benefit = document.getElementById("proposal-benefit").value;
+      const risk = document.getElementById("proposal-risk").value;
+
+      if (!title || !description || !usage || !strategic || !duration || !workload || !cost || !benefit || !risk) {
         alert("Please fill out all fields");
         return;
       }
@@ -239,20 +358,37 @@
       socket.send(
         JSON.stringify({
           type: "createProposal",
-          data: { title, description, priority, createdBy: username },
+          data: {
+            title,
+            description,
+            usage,
+            strategicImportance: strategic,
+            estimatedDuration: duration,
+            estimatedWorkload: workload,
+            estimatedCost: cost,
+            estimatedBenefit: benefit,
+            riskAssessment: risk,
+            // priority,
+            createdBy: username
+          },
         })
       );
 
       document.getElementById("proposal-title").value = "";
       document.getElementById("proposal-description").value = "";
-      document.getElementById("proposal-priority").value = "1";
+      document.getElementById("proposal-usage").value = "";
+      document.getElementById("proposal-strategic").value = "";
+      document.getElementById("proposal-duration").value = "";
+      document.getElementById("proposal-workload").value = "";
+      document.getElementById("proposal-cost").value = "";
+      document.getElementById("proposal-benefit").value = "";
+      document.getElementById("proposal-risk").value = "";
+      // document.getElementById("proposal-priority").value = "1";
     }
 
     window.onload = async () => {
       try {
         const loggedInUsername = new URLSearchParams(window.location.search).get("username");
-        console.log("Logged-in username:", loggedInUsername);
-
         if (!loggedInUsername) {
           throw new Error("Username is missing. Please log in again.");
         }
@@ -263,44 +399,44 @@
         }
 
         const userData = await response.json();
-        console.log("User data fetched:", userData);
         initWebSocket(loggedInUsername, userData.role);
 
-        //document.getElementById("dashboard-section").style.display = "block";
+        // Set employee name in header
+        document.getElementById("employee-name").textContent = userData.name || loggedInUsername;
+
+        // Set department next to Proposals
+        document.getElementById("department-name").textContent = userData.department ? `(${userData.department})` : "";
       } catch (error) {
         console.error("Error fetching user information:", error);
-        //alert("Failed to load user information. Please log in again.");
       }
     };
+
     function logout() {
-    const username = new URLSearchParams(window.location.search).get("username");
+      const username = new URLSearchParams(window.location.search).get("username");
 
-    fetch("/logout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ username })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.result === "success") {
-        // Optionally close the WebSocket connection
-        if (socket && socket.readyState === WebSocket.OPEN) {
-          socket.close();
+      fetch("/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.result === "success") {
+          if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.close();
+          }
+          window.location.href = "/login.html";
+        } else {
+          alert("Logout failed: " + data.message);
         }
-
-        // Redirect to login page
-        window.location.href = "/login.html";
-      } else {
-        alert("Logout failed: " + data.message);
-      }
-    })
-    .catch((err) => {
-      console.error("Logout error:", err);
-      alert("An error occurred while logging out.");
-    });
-  }
+      })
+      .catch((err) => {
+        console.error("Logout error:", err);
+        alert("An error occurred while logging out.");
+      });
+    }
   </script>
 </body>
 </html>
