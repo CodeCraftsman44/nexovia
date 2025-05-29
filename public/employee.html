@@ -4,44 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Employee Dashboard</title>
+  <link rel="stylesheet" href="/css/main.css">
   <style>
+    /*
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f9;
       margin: 0;
       padding: 0;
     }
-
-    nav {
-      background-color: #A4B07E;
-      color: white;
-      padding: 0 4px;
-      min-height: 14px;
-      font-size: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    #employee-name {
-      font-size: 13px;
-      font-weight: bold;
-      margin-left: 8px;
-      color: #fff;
-      letter-spacing: 0.5px;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin: 0 10px;
-      font-size: 16px;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
-
+    */
+    /*
     .container {
       display: flex;
       flex-wrap: wrap;
@@ -66,32 +39,34 @@
       margin-bottom: 20px;
       font-size: 30px;
     }
+      */
+      
 form label {
   display: block;
   margin-bottom: 2px;
   font-weight: bold;
-  font-size: 13px;
+  font-size: 12px;
   text-align: left;
-  width: 80%; /* Match input width for alignment */
+  width: 100%; 
   margin-left: auto;
   margin-right: auto;
   padding-left: 2px;
 }
 
-    form input,
+form input,
 form textarea,
 form select {
-  width: 80%;           /* Use only 80% of the available width */
-  margin-left: auto;    /* Center the input fields */
+  width: 100%;           
+  margin-left: auto;    
   margin-right: auto;
   padding: 6px;
   margin-bottom: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 13px;
+  font-size: 14px;
   display: block;
 }
-
+/*
 form button {
   width: 90px;
   min-width: unset;
@@ -101,18 +76,18 @@ form button {
   margin: 10px auto 0 auto;
   border-radius: 4px;
   display: block;
-  background-color: #A4B07E; /* Olive green */
+  background-color: #007caa; 
   color: #fff;
   border: none;
   transition: background 0.2s;
 }
 
 form button:hover {
-  background-color: #7a885e; /* Darker olive on hover */
+  background-color: #007caa; 
 }
 
     .position-right h2 {
-      color: #A4B07E;
+      color: #007caa;
       margin-bottom: 20px;
       display: flex;
       align-items: center;
@@ -128,22 +103,29 @@ form button:hover {
   flex-direction: column;
   height: 100%;
 }
+  */
 
     .table-container {
   flex: 1 1 auto;
   max-height: 550px;
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   border: 1px solid #ddd;
   border-radius: 4px;
   margin-top: 0;
 }
+.container-grid2, .container {
+  padding-bottom: 45px; /* Adjust to match or exceed footer height */
+}
 
     table {
   width: 100%;
-  height: 100%;
+
+  
   border-collapse: collapse;
-  font-size: 12px;
+  font-size: 14px;
+  table-layout: auto;
 }
 
     table th, table td {
@@ -153,7 +135,7 @@ form button:hover {
     }
 
     table th {
-      background-color: #A4B07E;
+      background-color: #007caa;
       color: white;
       position: sticky;
       top: 0;
@@ -166,7 +148,7 @@ form button:hover {
   background-color: #e6ecd6;
   cursor: pointer;
 }
-
+/*
     footer {
       background-color: #333;
       color: white;
@@ -196,7 +178,7 @@ form button:hover {
       margin-bottom: 20px;
     }
 
-    /* Responsive two-column form if viewport height is small */
+    
     @media (max-height: 700px) {
       .position-left form {
         display: grid;
@@ -210,7 +192,7 @@ form button:hover {
       .position-left form select {
         width: 100%;
       }
-      /* Make label+input stack in each cell */
+     
       .position-left form label {
         grid-column: span 2;
       }
@@ -219,25 +201,36 @@ form button:hover {
       .position-left form select {
         grid-column: span 2;
       }
-      /* Place button full width at the bottom */
+      
       .position-left form button {
         grid-column: span 2;
         justify-self: center;
       }
     }
+      */
   </style>
 </head>
 <body>
-  <nav>
-    <span id="employee-name"></span>
-    <button onclick="logout()" style="background-color: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
+  <!-- Navigation Panel -->
+		<nav>
+			<div class="company" id="employee-name"></div>
+			<div>
+				<a href=""><strong>Employee Dashboard</strong></a>
+        <a href=""><strong>Example</strong></a>
+        <a href=""><strong>Example</strong></a>
+			</div>
+			<div>
+				<button onclick="logout()" style="background-color: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
       Logout
     </button>
-  </nav>
+			</div>
+		</nav>
 
-  <div class="container">
+  <div class="container-grid2">
     <div class="position-left">
-      <h1>Employee Dashboard</h1>
+      <h2 style="text-align: center;">Create New Project</h2>
+      <br>
+      <br>
       <form onsubmit="event.preventDefault(); createProposal();">
         <label for="proposal-title">Title:</label>
         <input type="text" id="proposal-title" placeholder="Enter proposal title" required>
@@ -248,7 +241,7 @@ form button:hover {
         <label for="proposal-strategic">Strategic Importance:</label>
         <input type="text" id="proposal-strategic" placeholder="Describe the strategic importance" required>
         <label for="proposal-duration">Estimated Duration (months):</label>
-        <input type="number" id="proposal-duration" min="1" placeholder="e.g. 6" required>
+        <input type="number" id=  "proposal-duration" min="1" placeholder="e.g. 6" required>
         <label for="proposal-workload">Estimated Workload (person-days):</label>
         <input type="number" id="proposal-workload" min="1" placeholder="e.g. 30" required>
         <label for="proposal-cost">Estimated Cost:</label>
@@ -257,21 +250,17 @@ form button:hover {
         <input type="number" id="proposal-benefit" min="0" placeholder="e.g. 2000" required>
         <label for="proposal-risk">Risk Assessment:</label>
         <input type="text" id="proposal-risk" placeholder="Describe the risk assessment" required>
-        <!--
-        <label for="proposal-priority">Priority:</label>
-        <select id="proposal-priority">
-          <option value="1">High</option>
-          <option value="2">Medium</option>
-          <option value="3">Low</option>
-        </select>
-        -->
+        <br>
+        <br>
         <button type="submit">Submit Proposal</button>
       </form>
     </div>
-    <div class="position-right">
-      <h2>
+    <div class="position-right" style="padding-right: 10%;">
+      <h2 style="text-align: center;" >
         Proposals <span id="department-name"></span>
       </h2>
+      <br>
+      <br>
       <div class="table-container">
         <table>
           <thead>
@@ -288,9 +277,10 @@ form button:hover {
     </div>
   </div>
 
-  <footer class="footer">
-    &copy; 2025 Supernova. All rights reserved.
-  </footer>
+  <!-- Footer -->
+  <div class="footer">
+    <p>-- DHBW Project by Supernova --</p>
+  </div>
 
   <script>
     let proposals = [];

@@ -7,7 +7,7 @@
 
 nav {
 	height: 7vh;
-	background-color: #A4B07E;
+	background-color: #007caa;
 	display: flex;
 	justify-content: space-evenly;
 	align-items: center;
@@ -72,14 +72,14 @@ nav a:hover {
 	border: none;
 	font-size: 25px;
 	color: whitesmoke;
-	background-color: #A4B07E;
+	background-color: #007caa;
 	border-radius: 60px;
 	cursor: pointer;
 	padding: 8px 60px;
 }
 
 .position-left button:hover {
-	background-color: #707C4F;
+	background-color: #00597a;
 }
 
 .position-right {
@@ -92,7 +92,7 @@ nav a:hover {
 .position-login-mask{
 	width: 400px;
 	height: 400px;
-	background-color: #A4B07E;
+	background-color: #007caa;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -130,7 +130,7 @@ nav a:hover {
 	text-align: center;
 	width: 80%;
 	height: 40px;
-	border: none;
+	border: black solid 3px;
 	font-size: 15px;
 	color: whitesmoke;
 	background-color: black;
@@ -141,7 +141,7 @@ nav a:hover {
 	
 }
 .button:hover {
-  background-color: #333;
+  background-color: #7b0040;
 }
 .input-box {
 	width: 80%;
@@ -174,12 +174,12 @@ nav a:hover {
 }
 
 .olive {
-	color: #707C4F;
+	color: #00597a;
 }
 
 .footer {
 	height: 7vh;
-	background-color: #A4B07E;
+	background-color: #007caa;
 	display: flex;
 	justify-content: center;
 	align-items: center;

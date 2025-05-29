@@ -146,6 +146,20 @@ app.post("/api/proposals/:id/status", (req, res) => {
   res.json(proposal);
 });
 
+// Delete a proposal by id (for managers)
+app.delete("/api/proposals/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const idx = proposals.findIndex(p => p.id === id);
+  if (idx === -1) {
+    return res.status(404).json({ success: false, message: "Proposal not found" });
+  }
+  const deleted = proposals.splice(idx, 1)[0];
+  fs.writeFileSync(proposalsPath, JSON.stringify(proposals, null, 2));
+  // Optionally broadcast the deletion to all clients
+  broadcast({ type: "deleteProposal", data: { id } });
+  res.json({ success: true, deleted });
+});
+
 //+Admin Functions
 
 
